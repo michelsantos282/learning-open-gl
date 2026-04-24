@@ -31,6 +31,7 @@ static int CreateShader(const std::string& vertexShader, const std::string& frag
 
 int main()
 {
+    // ============================= CRIAÇÃO DA JANELA =============================
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -46,6 +47,9 @@ int main()
     }
 
     glfwMakeContextCurrent(window);
+    // ============================= FIM DA CRIAÇÃO DA JANELA =============================
+
+    // ============================= CARREGA O OPENGL COM GLAD =============================
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
@@ -53,21 +57,31 @@ int main()
         return -1;
     }  
 
+    // ============================= CARREGA O OPENGL COM GLAD =============================
     glViewport(0, 0, 800, 600);
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);  
 
+    //Variavel que vai guardar o id do buffer
     unsigned int buffer;
+
+    //Vertices do triângulo
     float vertices[6] = {
         -0.5f, -0.5f,
          0.5f, -0.5f,
          0.0f,  0.5f
     };
 
+    //Gerao buffer e guarda o id na variavel buffer
     glGenBuffers(1, &buffer);
+
+    //Bind o buffer para tudo que for feito a partir de agora use esse buffer
     glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+    //Envia o buffer pra gpu
     glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), vertices, GL_STATIC_DRAW);
 
+    //Ativa o atributo posição no indice 0
     glEnableVertexAttribArray(0);
 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0);
