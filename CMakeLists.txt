@@ -13,6 +13,7 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(thirdparty/glfw-3.4)			#window oppener
 add_subdirectory(thirdparty/glad)	            #opengl loader
+add_definitions(-DRES_PATH="${CMAKE_SOURCE_DIR}/res/")
 
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
