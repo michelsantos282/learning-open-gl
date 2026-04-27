@@ -3,7 +3,6 @@
 #include <glad/glad.h> 
 #include <fstream>
 #include <string>
-#include <sstream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -19,49 +18,6 @@ static std::string ParseFile(const std::string filePath) {
     }
     return content;
 }
-
-//static ShaderProgramSource ParseShader(const std::string& filepath)
-//{
-//    std::ifstream stream(filepath);
-//
-//
-//    enum class ShaderType
-//    {
-//        NONE = -1, VERTEX = 0, FRAGMENT = 1
-//    };
-//
-//    std::string line;
-//    std::stringstream ss[2];
-//    ShaderType type = ShaderType::NONE;
-//
-//    while (getline(stream, line))
-//    {
-//        if (!line.empty() && line.back() == '\r')
-//            line.pop_back();
-//        if (line.find("#shader") != std::string::npos)
-//        {
-//
-//            if (line.find("vertex") != std::string::npos)
-//            {
-//                type = ShaderType::VERTEX;
-//            }
-//            else if (line.find("fragment") != std::string::npos)
-//            {
-//                type = ShaderType::FRAGMENT;
-//            }
-//        }
-//        else if (type != ShaderType::NONE) {
-//            ss[(int)type] << line << '\n';
-//        }
-//
-//    }
-//
-//    std::cout << "TYPE: " << (int)type << " | " << line << std::endl;
-//    std::cout << "VERTEX SIZE: " << ss[0].str().size() << std::endl;
-//    std::cout << "FRAGMENT SIZE: " << ss[1].str().size() << std::endl;
-//
-//    return { ss[0].str(), ss[1].str() };
-//}
 
 static unsigned int CompileShader(unsigned int type, const std::string& source)
 {
@@ -143,20 +99,36 @@ int main()
 
 
     //Vertices do triângulo
-    float vertices[6] = {
-        -0.5f, -0.5f,
-         0.5f, -0.5f,
-         0.0f,  0.5f
+    float vertices[] = {
+        -0.5f, -0.5f, //Bottom Left
+         0.5f, -0.5f, //Bottom right
+         0.5f,  0.5f, // Top
+         -0.5f,  0.5f,
     };
 
+
+    unsigned int indices[] = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+
+
     //Variavel que vai guardar o id do buffer
+    //A Vertex Buffer Object (VBO) is an OpenGL feature 
+    // that allows you to store vertex data—such as positions, colors, normals, 
+    // and texture coordinates—directly in the GPU's video memory. 
     unsigned int VBO;
+
+
+    //A Vertex Array Object (VAO) in OpenGL is a container object that stores the state needed for rendering, 
+    // specifically describing how vertex data in Vertex Buffer Objects (VBOs) is formatted and accessed
     //unsigned int VAO;
     //glGenVertexArrays(1, &VAO);
     //glBindVertexArray(VAO);
 
 
-    //Gerao buffer e guarda o id na variavel buffer
+    //Gera o buffer e guarda o id na variavel buffer
     glGenBuffers(1, &VBO);
 
     //Bind o buffer para tudo que for feito a partir de agora use esse buffer
@@ -168,6 +140,12 @@ int main()
     //Ativa o atributo posição no indice 0
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
+
+    unsigned int IBO;
+    glGenBuffers(1, &IBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -186,7 +164,7 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
       
         //Check and call events and swap the buffers
         glfwSwapBuffers(window);
@@ -210,3 +188,5 @@ void processInput(GLFWwindow* window)
         glfwSetWindowShouldClose(window, true);
     }
 }
+
+
